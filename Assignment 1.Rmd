@@ -1,0 +1,16 @@
+---
+title: "Assignment 1"
+author: "Adele Colwell"
+date: "2023-02-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Adele Colwell Assignment 1 
+
+I am taking this course because I want to improve my environmental computing skills and build on the knowledge I gained in the previous 206 course. I think that expanding my knowledge and toolkit of ways to utilize R will help me in my group project, and in my future career. Knowing how to wrangle and use data is a critical skill in the environmental field. My specializations are Energy and Climate, and Corporate Environmental Management, both areas that utilize data and programming. 
+
+I have some mild data science experience from my time working in a lab in my undergrad. I coded a few figures using R and ggplot for a paper. That was my first experience with R. I also have experience from 206. These are my only two experiences with data science, and I am excited to learn more in this course. 
