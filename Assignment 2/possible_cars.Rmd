@@ -1,0 +1,122 @@
+---
+title: "possible_cars"
+author: "Adele Colwell"
+date: "2023-03-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggpubr)
+```
+
+3 car types 
+
+Imagine with have 3 different car types - and we know how often each occurs:
+
+* car A  mass  31,752kg, area 16 m^2^
+
+* car B mass  15,000kg, area 16 m^2^
+
+* car C mass 5000kg area 10 m^2^
+
+Mean highway speed is 80 km/hr, SD=10 km/hr
+
+```{r with pmap}
+#method using pmap 
+
+#super light car, mass=5000 kg and surface area= 10m2
+possible_cars = data.frame(name = c("A","B","C", "D"),mass=c(10000,65000,38000,5000), area = c(22,30,22,10))
+
+nsample = 200
+mean_speed = log(80*0.277)
+
+speeds = rlnorm(mean=mean_speed, sd=0.1*mean_speed, nsample)
+summary(speeds)
+
+plot(density(speeds), ylab="Distribution of Speeds in (m/s)")
+
+
+#running pmap for each value with other parameters set
+powerall1 = pmap(list(A = possible_cars$area, m=possible_cars$mass), fuel_eff, V=speeds)
+
+#turning loop results into dataframe
+powerall1 = as.data.frame(powerall1, col.names=possible_cars$name)
+
+# run the function for each row in parameters listed, using values for other parameters listed in MoreArgs EACH time - a column for row in parameter list is returned
+powerall1b = mapply(FUN=fuel_eff, A = possible_cars$area, m=possible_cars$mass, MoreArgs = list(V=speeds)  )
+
+#add column names
+colnames(powerall1b)=possible_cars$name
+
+head(powerall1b)
+head(powerall1)
+
+# for plotting sometimes its useful to turn columns in to rows
+powerallr1 = powerall1 %>% pivot_longer(cols=everything(), names_to="car", values_to="power")
+head(powerallr1)
+
+#visualization
+
+method1_plot = ggplot(powerallr1, aes(car,power, fill=car))+geom_boxplot()+ggtitle("pmap")
+
+method1_plot
+
+```
+
+
+```{r with forloop}
+#method using FOR loop
+
+# assume a log normal distribution of speeds with mean 100km/hr
+# convert speeds
+# sample of a 200 speeds
+
+nsample = 200
+mean_speed = log(80*0.277)
+
+speeds = rlnorm(mean=mean_speed, sd=0.1*mean_speed, nsample)
+summary(speeds)
+
+plot(density(speeds), ylab="Distribution of Speeds in (m/s)")
+
+
+
+# data frame creation one column for each car and one row for each speed
+
+powerall2 = as.data.frame(matrix(nrow=length(speeds), ncol=nrow(possible_cars)))
+
+
+
+#looping
+for (i in 1:nrow(possible_cars)) {
+  powerall2[,i] = fuel_eff(A=possible_cars$area[i], m=possible_cars$mass[i], V=speeds)
+}
+
+# we can add column names
+colnames(powerall2)=possible_cars$name
+
+head(powerall2)
+
+# plotting is the same as above
+
+# turn columns into rows 
+powerallr2 = powerall2 %>% pivot_longer(cols=everything(), names_to="car", values_to="power")
+
+# quick visualization
+method2_plot = ggplot(powerallr2, aes(car,power, fill=car))+geom_boxplot()+ggtitle("For Loop")
+
+method2_plot
+
+
+```
+
+```{r}
+ggarrange(method1_plot, method2_plot, nrow=2)
+
+powerall1 %>% map(mean)
+powerall2 %>% map(mean)
+```
+
+
