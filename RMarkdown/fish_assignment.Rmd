@@ -1,0 +1,29 @@
+---
+title: "fish_assignment"
+author: "Adele Colwell"
+date: "2023-03-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#read in data
+fishie <- read.delim(file.choose("fish.txt"))
+```
+
+```{r}
+source("../R/fish_catch.R")
+```
+
+
+```{r}
+#run function for the fishie data 
+#returns rarest, most common, and total number 
+fishie_return <- fish_catch(fishie)
+
+data.frame(fishie_return)
+```
+

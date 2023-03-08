@@ -23,6 +23,10 @@ Imagine with have 3 different car types - and we know how often each occurs:
 
 Mean highway speed is 80 km/hr, SD=10 km/hr
 
+```{r}
+source("../R/fuel_eff.R")
+```
+
 ```{r with pmap}
 #method using pmap 
 
